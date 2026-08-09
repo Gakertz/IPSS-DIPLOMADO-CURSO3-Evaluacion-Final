@@ -41,5 +41,10 @@ export const proteger = (req, res, next) => {
 // TODO: devuelve un middleware que deje pasar solo si req.usuario.rol === rol.
 //   Si no coincide, responde 403.
 export const soloRol = (rol) => (req, res, next) => {
-  // ...
+  if (req.usuario.rol !== rol) {
+    return res.status(403).json({
+      error: 'No tienes permiso para realizar esta accion',
+    })
+  }
+  next()
 }
