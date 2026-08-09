@@ -8,5 +8,17 @@ export const authRoutes = Router()
 
 // TODO: conecta cada ruta con su controller.
 // authRoutes.post('/registro/profesor', controller.registrarProfesor)
+authRoutes.post(
+  '/registro/profesor',
+  controller.registrarProfesor,
+)
 // authRoutes.post('/registro/alumno', controller.registrarAlumno)
+authRoutes.post(
+  '/registro/alumno',
+  controller.registrarAlumno,
+)
 // authRoutes.post('/login', controller.login)
+authRoutes.post(
+  '/login',
+  controller.login,
+)
