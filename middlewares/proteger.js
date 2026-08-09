@@ -15,7 +15,22 @@ import { JWT_SECRET } from '../config/jwt.js'
 //   5. Si verify lanza (token alterado/expirado), responde 401.
 //   6. Si todo bien, next().
 export const proteger = (req, res, next) => {
-  // ...
+  const authorization = req.headers.authorization
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: 'Token requerido',
+    })
+  }
+  const token = authorization.split(' ')[1]
+  try {
+    const payload = jwt.verify(token, JWT_SECRET)
+    req.usuario = payload
+    next()
+  } catch (error) {
+    return res.status(401).json({
+      error: 'Token invalido o expirado',
+    })
+  }
 }
 
 // ---------------------------------------------------------------------------
