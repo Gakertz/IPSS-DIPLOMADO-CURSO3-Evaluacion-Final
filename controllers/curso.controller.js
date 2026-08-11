@@ -9,7 +9,8 @@ import * as service from '../services/curso.service.js'
 // GET /api/cursos — todos los cursos (con populate de profesor y alumnos).
 export const listar = async (req, res) => {
   try {
-    // TODO: devuelve todos los cursos, con .populate() del profesor y los alumnos.
+    const cursos = await service.listarCursos()
+    res.status(200).json(cursos)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -18,16 +19,25 @@ export const listar = async (req, res) => {
 // POST /api/cursos — crea un curso (nace EN_MATRICULA, sin profesor).
 export const crear = async (req, res) => {
   try {
-    // TODO: crea el curso con los datos del body. Status 201.
+    const curso = await service.crearCurso(req.body)
+    res.status(201).json(curso)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
 }
 
-// PUT /api/cursos/:id — edita un curso.
 export const editar = async (req, res) => {
   try {
-    // TODO: edita el curso. Si no existe → 404.
+    const curso = await service.editarCurso(
+      req.params.id,
+      req.body,
+    )
+    if (!curso) {
+      return res.status(404).json({
+        error: 'Curso no encontrado',
+      })
+    }
+    res.status(200).json(curso)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -36,7 +46,15 @@ export const editar = async (req, res) => {
 // DELETE /api/cursos/:id — borra un curso.
 export const borrar = async (req, res) => {
   try {
-    // TODO: borra el curso. Si no existe → 404.
+    const curso = await service.borrarCurso(req.params.id)
+    if (!curso) {
+      return res.status(404).json({
+        error: 'Curso no encontrado',
+      })
+    }
+    res.status(200).json({
+      mensaje: 'Curso eliminado correctamente',
+    })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
