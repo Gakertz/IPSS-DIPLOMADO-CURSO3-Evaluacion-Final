@@ -131,6 +131,10 @@ export const alumnosDelCurso = async (req, res) => {
 export const misMatriculas = async (req, res) => {
   try {
     // TODO: filtra los cursos que tengan a req.usuario.id en su array de alumnos.
+    const cursos = await service.cursosDelAlumno(
+      req.usuario.id,
+    )
+    res.status(200).json(cursos)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -144,6 +148,29 @@ export const matricularme = async (req, res) => {
     //   2. Si NO está EN_MATRICULA → 409 (curso cerrado).
     //   3. Si el alumno YA está en el curso → 409 (no duplicar).
     //   4. Agrega req.usuario.id al array de alumnos. Guarda.
+    const curso = await service.buscarCurso(req.params.id)
+    if (!curso) {
+      return res.status(404).json({
+        error: 'Curso no encontrado',
+      })
+    }
+    if (curso.estado !== 'EN_MATRICULA') {
+      return res.status(409).json({
+        error: 'El curso no se encuentra en periodo de matricula',
+      })
+    }
+    const yaMatriculado = curso.alumnos.some(
+      (alumnoId) =>
+        alumnoId.toString() === req.usuario.id,
+    )
+    if (yaMatriculado) {
+      return res.status(409).json({
+        error: 'El alumno ya esta matriculado en este curso',
+      })
+    }
+    curso.alumnos.push(req.usuario.id)
+    await curso.save()
+    res.status(200).json(curso)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -156,7 +183,25 @@ export const desmatricularme = async (req, res) => {
     //   1. Busca el curso. Si no existe → 404.
     //   2. Si NO está EN_MATRICULA → 409.
     //   3. Quita a req.usuario.id del array de alumnos. Guarda.
+    const curso = await service.buscarCurso(req.params.id)
+    if (!curso) {
+      return res.status(404).json({
+        error: 'Curso no encontrado',
+      })
+    }
+    if (curso.estado !== 'EN_MATRICULA') {
+      return res.status(409).json({
+        error: 'El curso no se encuentra en periodo de matricula',
+      })
+    }
+    curso.alumnos = curso.alumnos.filter(
+      (alumnoId) =>
+        alumnoId.toString() !== req.usuario.id,
+    )
+    await curso.save()
+    res.status(200).json(curso)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
 }
+
