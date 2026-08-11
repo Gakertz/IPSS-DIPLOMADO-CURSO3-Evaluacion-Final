@@ -10,8 +10,8 @@ import { Curso } from '../models/curso.model.js'
 //   - listarCursos()            → Curso.find().populate('profesor').populate('alumnos')
 export const listarCursos = async () => {
     return Curso.find()
-        .populate('profesor')
-        .populate('alumnos')
+        .populate('profesor', '-password')
+        .populate('alumnos', '-password')
     }
 //   - crearCurso(datos)
 export const crearCurso = async (datos) => {
@@ -41,16 +41,16 @@ export const cursosDelProfesor = async (profesorId) => {
     return Curso.find({
         profesor: profesorId,
     })
-        .populate('profesor')
-        .populate('alumnos')
+        .populate('profesor', '-password')
+        .populate('alumnos', '-password')
 }
 //   - cursosDelAlumno(alumnoId)
 export const cursosDelAlumno = async (alumnoId) => {
     return Curso.find({
         alumnos: alumnoId,
     })
-        .populate('profesor')
-        .populate('alumnos')
+        .populate('profesor', '-password')
+        .populate('alumnos', '-password')
 }
 
 // Piensa qué necesita cada ruta y crea solo lo que uses.

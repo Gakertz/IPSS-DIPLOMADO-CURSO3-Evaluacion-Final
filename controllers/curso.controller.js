@@ -120,7 +120,7 @@ export const alumnosDelCurso = async (req, res) => {
         error: 'No tienes permiso para ver los alumnos de este curso',
       })
     }
-    await curso.populate('alumnos')
+    await curso.populate('alumnos', '-password')
     res.status(200).json(curso.alumnos)
   } catch (error) {
     res.status(500).json({ error: error.message })
