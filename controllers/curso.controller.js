@@ -64,6 +64,10 @@ export const borrar = async (req, res) => {
 export const misCursos = async (req, res) => {
   try {
     // TODO: filtra los cursos por profesor = req.usuario.id.
+    const cursos = await service.cursosDelProfesor(
+      req.usuario.id,
+    )
+    res.status(200).json(cursos)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
@@ -76,6 +80,20 @@ export const asignarme = async (req, res) => {
     //   1. Busca el curso. Si no existe → 404.
     //   2. Si YA tiene profesor → 409 (nadie se lo quita a otro).
     //   3. Si está libre → asígnale req.usuario.id como profesor. Guarda.
+    const curso = await service.buscarCurso(req.params.id)
+    if (!curso) {
+      return res.status(404).json({
+        error: 'Curso no encontrado',
+      })
+    }
+    if (curso.profesor) {
+      return res.status(409).json({
+        error: 'El curso ya tiene un profesor asignado',
+      })
+    }
+    curso.profesor = req.usuario.id
+    await curso.save()
+    res.status(200).json(curso)
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -88,6 +106,22 @@ export const alumnosDelCurso = async (req, res) => {
     //   1. Busca el curso. Si no existe → 404.
     //   2. Si el profesor del curso NO es req.usuario.id → 403.
     //   3. Devuelve la lista de alumnos (con populate).
+    const curso = await service.buscarCurso(req.params.id)
+    if (!curso) {
+      return res.status(404).json({
+        error: 'Curso no encontrado',
+      })
+    }
+    if (
+      !curso.profesor ||
+      curso.profesor.toString() !== req.usuario.id
+    ) {
+      return res.status(403).json({
+        error: 'No tienes permiso para ver los alumnos de este curso',
+      })
+    }
+    await curso.populate('alumnos')
+    res.status(200).json(curso.alumnos)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
