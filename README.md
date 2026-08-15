@@ -16,14 +16,20 @@ YouTube:
 Haz un **fork** para tener tu copia, clónala, e instala:
 
 ```bash
-git clone https://github.com/TU-USUARIO/IPSS-DIPLOMADO-CURSO3-Evaluacion-Final.git
+git clone https://github.com/Gakertz/IPSS-DIPLOMADO-CURSO3-Evaluacion-Final.git
 cd IPSS-DIPLOMADO-CURSO3-Evaluacion-Final
 npm install
 ```
 
-**Configura tu MongoDB:** abre `config/db.js` y reemplaza `usuario-mongo` y `clave-secreta`
-por los de tu cluster de Atlas.
+Variables de entorno
 
+Crear un archivo .env en la raíz del proyecto y configurar la cadena de conexión a MongoDB:
+
+```bash
+MONGODB_URI=mongodb+srv://<usuario>:<password>@<cluster>/plataforma
+```
+
+El archivo .env está excluido del repositorio mediante .gitignore.
 Levanta el servidor:
 
 ```bash
