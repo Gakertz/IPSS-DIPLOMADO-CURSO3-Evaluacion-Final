@@ -3,7 +3,11 @@
 > **Diplomado IPS · Módulo 3** — Backend y APIs REST
 > Instituto Profesional San Sebastián
 
-Este es tu **punto de partida**. La estructura ya está armada; tú construyes la lógica.
+Video demostrativo
+
+YouTube:
+
+<https://youtu.be/APjka1NCqxY>
 
 ---
 
